@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Will You Be My Valentine? 💖</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(45deg, #ff85a2, #ffacbe);
+      font-family: 'Dancing Script', cursive;
+      overflow: hidden;
+    }
+    .container {
+      text-align: center;
+      padding: 2rem;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+      position: relative;
+      max-width: 500px;
+      width: 90%;
+      height: 300px; /* fixed height for movement space */
+    }
+    h1 {
+      color: #e75480;
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .buttons {
+      margin-top: 2rem;
+      position: relative;
+    }
+    button {
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Dancing Script', cursive;
+    }
+    #yesBtn {
+      background: #e75480;
+      color: white;
+      position: relative;
+      z-index: 1;
+    }
+    #noBtn {
+      background: #ffb3c6;
+      color: #e75480;
+      position: absolute; /* Changed to absolute for precise placement */
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+    }
+    button:hover {
+      transform: scale(1.1);
+    }
+    .hearts span {
+      position: absolute;
+      animation: float 6s linear infinite;
+      font-size: 1.5rem;
+    }
+    @keyframes float {
+      0% { transform: translateY(100vh) rotate(0deg); }
+      100% { transform: translateY(-100vh) rotate(360deg); }
+    }
+    .hidden {
+      display: none;
+    }
+    #finalMessage {
+      font-size: 2rem;
+      color: #e75480;
+      animation: jump 0.8s ease infinite;
+    }
+    @keyframes jump {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="hearts">
+    <!-- Hearts will be added by JavaScript -->
+  </div>
+  <div class="container">
+    <h1 id="question">My Dearest, Will You Be My Valentine? 💌</h1>
+    <div class="buttons">
+      <button id="yesBtn">Yes! 💖</button>
+      <button id="noBtn">Umm... 😳</button>
+    </div>
+    <div id="finalMessage" class="hidden">
+      Yay! 💝 You've made me the happiest! Let's make beautiful memories together! from now on you're Anurag's valentine! 🌸
+    </div>
+  </div>
+  <script>
+    const questions = [
+      "Will you let me cherish you forever? 🌹",
+      "Do you promise to be my sunshine every day? ☀️",
+      "Will you hold my hand through life's journey? 🤝",
+      "Do you accept all my love and affection? 💞"
+    ];
+
+    let currentQuestion = 0;
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    const questionElement = document.getElementById('question');
+    const finalMessage = document.getElementById('finalMessage');
+    const heartsContainer = document.querySelector('.hearts');
+    const container = document.querySelector('.container');
+
+    yesBtn.addEventListener('click', () => {
+      if (currentQuestion < questions.length) {
+        questionElement.innerHTML = questions[currentQuestion];
+        currentQuestion++;
+      } else {
+        document.querySelector('.buttons').classList.add('hidden');
+        finalMessage.classList.remove('hidden');
+      }
+    });
+
+    // Function to reposition the "Umm..." button away from the current mouse position
+    function moveButton(e) {
+      const containerRect = container.getBoundingClientRect();
+      const btnRect = noBtn.getBoundingClientRect();
+      let newLeft, newTop;
+      let attempt = 0;
+      do {
+        newLeft = Math.random() * (containerRect.width - btnRect.width);
+        newTop = Math.random() * (containerRect.height - btnRect.height);
+        attempt++;
+        if (attempt > 100) break; // avoid potential infinite loop
+      } while (
+        e.clientX >= containerRect.left + newLeft &&
+        e.clientX <= containerRect.left + newLeft + btnRect.width &&
+        e.clientY >= containerRect.top + newTop &&
+        e.clientY <= containerRect.top + newTop + btnRect.height
+      );
+      noBtn.style.left = newLeft + 'px';
+      noBtn.style.top = newTop + 'px';
+    }
+
+    // Listen for mouse movements on the document
+    document.addEventListener('mousemove', function(e) {
+      const btnRect = noBtn.getBoundingClientRect();
+      // Check if the cursor is inside the button's current bounds
+      if (
+        e.clientX >= btnRect.left &&
+        e.clientX <= btnRect.right &&
+        e.clientY >= btnRect.top &&
+        e.clientY <= btnRect.bottom
+      ) {
+        moveButton(e);
+      }
+    });
+
+    // Create floating hearts in the background
+    function createHearts() {
+      for (let i = 0; i < 10; i++) {
+        const heart = document.createElement('span');
+        heart.innerHTML = '💖';
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.animationDelay = Math.random() * 6 + 's';
+        heartsContainer.appendChild(heart);
+      }
+    }
+
+    createHearts();
+  </script>
+</body>
+</html>
